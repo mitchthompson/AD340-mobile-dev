@@ -4,35 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="assignments.mitch.ad340project.MainActivity">
+    tools:context="assignments.mitch.ad340project.DisplayFunFactsActivity">
 
     <TextView
-        android:layout_width="322dp"
-        android:layout_height="41dp"
-        android:text="@string/intro"
-        android:textAlignment="center"
-        android:textColor="@color/textColor"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:id="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="80dp" />
-
-    <Button
-        android:id="@+id/button"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        android:onClick="funFacts"
-        android:text="@string/button_send"
+        android:text="@string/fun_fact1"
+        android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/fun_fact2"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 </android.support.constraint.ConstraintLayout>
