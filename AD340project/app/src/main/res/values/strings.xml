@@ -1,7 +1,17 @@
 <resources>
-    <string name="app_name">Homework 3</string>
+    <string name="app_name">Homework 4</string>
     <string name="intro">My name is Mitchell Thompson.</string>
     <string name="button_send">Some Fun Facts</string>
     <string name="fun_fact1">I kinda have two birthdays.</string>
     <string name="fun_fact2">I have an old fashioned II after my name.</string>
+    <string name="menu_action_about">About</string>
+    <string name="menu_action_fav_movies">Fav Movies</string>
+    <string name="menu_action_fun_facts">Fun Facts</string>
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="about_description_text">This App was created while learning Android development. The purpose is to demo what I have learned. In it there
+        are examples of various Android features. I used projects I have worked on, information about myself, and things I like as content.</string>
+    <string name="about_heading">What is this App for?</string>
+    <string name="hw4_dialog_message">Look at that! This is exciting. Alerts are cool if used for important things. This? Testing is important! :)</string>
+    <string name="hw4_dialog_title">Look at this dialog alert!</string>
+    <string name="hw2_edit_name">Enter your name</string>
 </resources>

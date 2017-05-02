@@ -1,8 +1,11 @@
 package assignments.mitch.ad340project;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,11 +14,12 @@ import android.widget.Toast;
 
 
 public class ButtonAdapter extends BaseAdapter {
+    private static final String TAG = ButtonAdapter.class.getSimpleName();
     private Context mContext;
 
     private String[] filenames = {
             "Fav Movies",
-            "Fav Books",
+            "Alert!",
             "Projects",
             "Contact"
     };
@@ -74,7 +78,28 @@ public class ButtonAdapter extends BaseAdapter {
                 Intent intent = new Intent(mContext, MovieListActivity.class);
                 mContext.startActivity(intent);
 
-            }else {
+            }else if(position == 1){
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
+                mBuilder.setTitle(R.string.hw4_dialog_title);
+                mBuilder.setMessage(R.string.hw4_dialog_message);
+                mBuilder.setPositiveButton("It is cool", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d(TAG, "onClick() 'It is cool' selected");
+                        dialogInterface.dismiss();
+                    }
+                });
+                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d(TAG, "onClick() 'Dimiss' selected");
+                        dialogInterface.dismiss();
+                    }
+                });
+                AlertDialog alertDialog = mBuilder.create();
+                alertDialog.show();
+
+            }else{
                 Toast.makeText(mContext, filenames[position],
                         Toast.LENGTH_SHORT).show();
             }
