@@ -48,6 +48,8 @@ public class DisplayFunFactsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
         mMenuInflater.inflate(R.menu.main_menu, menu);
+        MenuItem item = menu.findItem(R.id.action_fun_facts);
+        item.setVisible(false);
         return true;
     }
 

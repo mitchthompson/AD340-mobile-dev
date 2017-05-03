@@ -65,10 +65,14 @@ public class MovieListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
         mMenuInflater.inflate(R.menu.main_menu, menu);
+        MenuItem item = menu.findItem(R.id.action_movies_list);
+        item.setVisible(false);
         return true;
     }
 

@@ -19,7 +19,7 @@ public class ButtonAdapter extends BaseAdapter {
 
     private String[] filenames = {
             "Fav Movies",
-            "Alert!",
+            "Alert",
             "Projects",
             "Contact"
     };
