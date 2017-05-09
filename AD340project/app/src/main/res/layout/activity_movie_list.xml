@@ -18,7 +18,7 @@ android:id="@+id/movie_list_layout">
          />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview1"
+        android:id="@+id/movie_list_recyclerview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"

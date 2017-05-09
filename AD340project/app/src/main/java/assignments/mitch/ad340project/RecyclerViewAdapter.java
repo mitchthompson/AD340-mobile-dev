@@ -1,31 +1,26 @@
 package assignments.mitch.ad340project;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
-
-    String[] MovieNames;
-    String[] MovieYears;
+    private static final String TAG = DisplayFunFactsActivity.class.getSimpleName();
+    String[] movieTitle;
+    String[] movieYear;
     Context context;
     View view1;
     ViewHolder viewHolder1;
-    TextView textView;
+    String[][] movieList;
+
 
     public RecyclerViewAdapter(Context context1, String[][] movies){
-        String[] names = new String[13];
-        String[] years = new String[13];
-        for (int i = 0; i < movies.length; i++){
-                names[i] = movies[i][0];
-                years[i] = movies[i][1];
-        }
-
-        MovieNames = names;
-        MovieYears = years;
+        movieList = movies;
         context = context1;
+
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -55,13 +50,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position){
 
-        holder.textView.setText(MovieNames[position]);
-        holder.textView2.setText(MovieYears[position]);
+        holder.textView.setText(movieList[position][0]);
+        holder.textView2.setText(movieList[position][1]);
     }
 
     @Override
     public int getItemCount(){
 
-        return MovieNames.length;
+        return movieList.length;
     }
+
 }

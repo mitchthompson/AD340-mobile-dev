@@ -7,36 +7,35 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.RelativeLayout;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class MovieListActivity extends AppCompatActivity {
-
+    private static final String TAG = DisplayFunFactsActivity.class.getSimpleName();
     Context context;
     RecyclerView recyclerView;
     RelativeLayout relativeLayout;
     RecyclerView.Adapter recyclerViewAdapter;
     RecyclerView.LayoutManager recylerViewLayoutManager;
-    String[][] movies =
-            {
-                    {"Jurassic Park", "1993"},
-                    {"Contact", "1997"},
-                    {"The Empire Strikes Back", "1980"},
-                    {"The Lion King", "1994"},
-                    {"Shawshank Redemption", "1994"},
-                    {"Interstellar", "2014"},
-                    {"Back to the Future II", "1985"},
-                    {"Alien", "1979"},
-                    {"Wall-E", "2008"},
-                    {"V for Vendetta", "2005"},
-                    {"The Big Lebowski", "1998"},
-                    {"Fargo", "1996"},
-                    {"Groundhog Day", "1993"}
-            };
+    String url = "http://mitchlthompson.com/ad340/movies.json";
+    String[][] movieList;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +45,57 @@ public class MovieListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_list);
 
         context = getApplicationContext();
-
         relativeLayout = (RelativeLayout) findViewById(R.id.movie_list_layout);
+        recyclerView = (RecyclerView) findViewById(R.id.movie_list_recyclerview);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview1);
 
-        recylerViewLayoutManager = new LinearLayoutManager(context);
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //Log.e(TAG, "Response from url: " + response.toString());
 
-        recyclerView.setLayoutManager(recylerViewLayoutManager);
 
-        recyclerViewAdapter = new RecyclerViewAdapter(context, movies);
+                        try {
 
-        recyclerView.setAdapter(recyclerViewAdapter);
+                            JSONArray movies = response.getJSONArray("movies");
+                            int movieNum = movies.length();
+                            movieList = new String[movieNum][movieNum];
+                            for (int i = 0; i < movies.length(); i++) {
+                                JSONObject jsonobject = movies.getJSONObject(i);
+                                movieList[i][0] = jsonobject.getString("title");
+                                movieList[i][1] = jsonobject.getString("year");
+                            }
+
+                            recyclerViewAdapter = new RecyclerViewAdapter(context, movieList);
+                            recyclerView.setAdapter(recyclerViewAdapter);
+                            recylerViewLayoutManager = new LinearLayoutManager(context);
+                            recyclerView.setLayoutManager(recylerViewLayoutManager);
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "Error: " + e.getMessage());
+                        }
+
+
+
+                    }
+
+
+
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Volley Error: " + error.toString());
+
+                    }
+                });
+
+        // Access the RequestQueue through singleton class.
+        MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
 
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
