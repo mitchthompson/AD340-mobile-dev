@@ -7,35 +7,24 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.RelativeLayout;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
 
 
 public class MovieListActivity extends AppCompatActivity {
-    private static final String TAG = DisplayFunFactsActivity.class.getSimpleName();
+    private static final String TAG = MovieListActivity.class.getSimpleName();
     Context context;
     RecyclerView recyclerView;
     RelativeLayout relativeLayout;
-    RecyclerView.Adapter recyclerViewAdapter;
+    static RecyclerView.Adapter recyclerViewAdapter;
     RecyclerView.LayoutManager recylerViewLayoutManager;
     String url = "http://mitchlthompson.com/ad340/movies.json";
-    String[][] movieList;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,54 +37,14 @@ public class MovieListActivity extends AppCompatActivity {
         relativeLayout = (RelativeLayout) findViewById(R.id.movie_list_layout);
         recyclerView = (RecyclerView) findViewById(R.id.movie_list_recyclerview);
 
+        recylerViewLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(recylerViewLayoutManager);
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        //Log.e(TAG, "Response from url: " + response.toString());
+        BackgroundTask backgroundTask = new BackgroundTask(context);
 
-
-                        try {
-
-                            JSONArray movies = response.getJSONArray("movies");
-                            int movieNum = movies.length();
-                            movieList = new String[movieNum][movieNum];
-                            for (int i = 0; i < movies.length(); i++) {
-                                JSONObject jsonobject = movies.getJSONObject(i);
-                                movieList[i][0] = jsonobject.getString("title");
-                                movieList[i][1] = jsonobject.getString("year");
-                            }
-
-                            recyclerViewAdapter = new RecyclerViewAdapter(context, movieList);
-                            recyclerView.setAdapter(recyclerViewAdapter);
-                            recylerViewLayoutManager = new LinearLayoutManager(context);
-                            recyclerView.setLayoutManager(recylerViewLayoutManager);
-
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "Error: " + e.getMessage());
-                        }
-
-
-
-                    }
-
-
-
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Volley Error: " + error.toString());
-
-                    }
-                });
-
-        // Access the RequestQueue through singleton class.
-        MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
+        ArrayList<MovieObject> movies = backgroundTask.getList();
+        recyclerViewAdapter = new RecyclerViewAdapter(context, movies);
+        recyclerView.setAdapter(recyclerViewAdapter);
 
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
