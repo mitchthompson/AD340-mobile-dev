@@ -2,6 +2,8 @@ package assignments.mitch.ad340project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -32,8 +35,17 @@ public class MovieListActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
 
         setContentView(R.layout.activity_movie_list);
-
         context = getApplicationContext();
+
+        //Check network status
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if(isConnected){
+            Toast toast = Toast.makeText(context, "You are not connected to the internet", Toast.LENGTH_LONG);
+            toast.show();
+        }
+
         relativeLayout = (RelativeLayout) findViewById(R.id.movie_list_layout);
         recyclerView = (RecyclerView) findViewById(R.id.movie_list_recyclerview);
 
@@ -42,7 +54,7 @@ public class MovieListActivity extends AppCompatActivity {
 
         BackgroundTask backgroundTask = new BackgroundTask(context);
 
-        ArrayList<MovieObject> movies = backgroundTask.getList();
+        ArrayList<MovieObject> movies = backgroundTask.getMovies();
         recyclerViewAdapter = new RecyclerViewAdapter(context, movies);
         recyclerView.setAdapter(recyclerViewAdapter);
 

@@ -25,7 +25,7 @@ public class BackgroundTask {
         this.context = ctx;
     }
 
-    public ArrayList<MovieObject> getList(){
+    public ArrayList<MovieObject> getMovies(){
 
         final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, jsonURL, null,
                 new Response.Listener<JSONArray>() {
