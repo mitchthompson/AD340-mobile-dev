@@ -41,7 +41,7 @@ public class MovieListActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected){
+        if(!isConnected){
             Toast toast = Toast.makeText(context, "You are not connected to the internet", Toast.LENGTH_LONG);
             toast.show();
         }
