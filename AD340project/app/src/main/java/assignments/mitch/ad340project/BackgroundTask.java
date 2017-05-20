@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class BackgroundTask {
     private static final String TAG = BackgroundTask.class.getSimpleName();
     Context context;
-    String jsonURL = "http://mitchlthompson.com/ad340/movieslist.json";
+    String jsonURL = "http://mitchlthompson.com/ad340/movies.json";
     ArrayList<MovieObject> arrayList = new ArrayList<>();
 
     public BackgroundTask(Context ctx){
@@ -34,9 +34,9 @@ public class BackgroundTask {
                         for (int count=0;count<response.length();count++)
                             try {
                                 JSONObject jsonObject = response.getJSONObject(count);
-                                MovieObject movie = new MovieObject(jsonObject.getString("title"), jsonObject.getString("year"));
+                                MovieObject movie = new MovieObject(jsonObject.getString("title"), jsonObject.getString("year"), jsonObject.getString("img_url"));
                                 arrayList.add(movie);
-                                //Log.e(TAG, "Test: " + jsonObject.getString("title") + " " + jsonObject.getString("year"));
+                                //Log.e(TAG, "Test: " + jsonObject.getString("title") + " " + jsonObject.getString("img_url"));
 
                             } catch (JSONException e) {
 
