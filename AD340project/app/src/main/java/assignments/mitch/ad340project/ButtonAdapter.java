@@ -20,7 +20,7 @@ public class ButtonAdapter extends BaseAdapter {
     private String[] filenames = {
             "Fav Movies",
             "Alert",
-            "Projects",
+            "Map",
             "Contact"
     };
 
@@ -99,6 +99,9 @@ public class ButtonAdapter extends BaseAdapter {
                 AlertDialog alertDialog = mBuilder.create();
                 alertDialog.show();
 
+            }else if(position == 2){
+                Intent intent = new Intent(mContext, MapLocation.class);
+                mContext.startActivity(intent);
             }else{
                 Toast.makeText(mContext, filenames[position],
                         Toast.LENGTH_SHORT).show();

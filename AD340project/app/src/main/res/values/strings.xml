@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Homework 5</string>
+    <string name="app_name">Homework 6</string>
     <string name="intro">My name is Mitchell Thompson.</string>
     <string name="button_send">Some Fun Facts</string>
     <string name="fun_fact1">I kinda have two birthdays.</string>
@@ -14,4 +14,5 @@
     <string name="hw4_dialog_message">Look at that! This is exciting. Alerts are cool if used for important things. This? Testing is important! :)</string>
     <string name="hw4_dialog_title">Look at this dialog alert!</string>
     <string name="hw2_edit_name">Enter your name</string>
+    <string name="get_location">Get Location</string>
 </resources>
