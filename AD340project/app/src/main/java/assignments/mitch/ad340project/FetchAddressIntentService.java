@@ -60,7 +60,7 @@ public class FetchAddressIntentService extends IntentService {
         // Make sure that the location data was really sent over through an extra. If it wasn't,
         // send an error error message and return.
         if (location == null) {
-            errorMessage = "No Location data provided";
+            errorMessage = "No location data";
             Log.wtf(TAG, errorMessage);
             deliverResultToReceiver(Constants.FAILURE_RESULT, errorMessage);
             return;
@@ -105,7 +105,7 @@ public class FetchAddressIntentService extends IntentService {
         // Handle case where no address was found.
         if (addresses == null || addresses.size()  == 0) {
             if (errorMessage.isEmpty()) {
-                errorMessage = "No Address found";
+                errorMessage = "No address found";
                 Log.e(TAG, errorMessage);
             }
             deliverResultToReceiver(Constants.FAILURE_RESULT, errorMessage);
