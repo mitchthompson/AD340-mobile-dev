@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:name="com.google.android.gms.maps.SupportMapFragment"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,28 +16,29 @@
         android:layout_width="match_parent" />
 
     <TextView
+        android:id="@+id/location_details"
+        android:layout_width="320dp"
+        android:layout_height="47dp"
+        android:text="" />
+
+    <TextView
         android:id="@+id/longitude"
-        android:layout_width="108dp"
+        android:layout_width="305dp"
         android:layout_height="24dp"
         android:text="" />
 
     <TextView
         android:id="@+id/latitude"
-        android:layout_width="109dp"
+        android:layout_width="320dp"
         android:layout_height="28dp"
-        android:text="" />
-
-    <TextView
-        android:id="@+id/location_details"
-        android:layout_width="144dp"
-        android:layout_height="47dp"
         android:text="" />
 
     <fragment
         android:id="@+id/map"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout="@android:layout/simple_spinner_item" />
 
 
 </LinearLayout>

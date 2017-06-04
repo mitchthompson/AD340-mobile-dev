@@ -6,7 +6,7 @@ public final class Constants {
     public static final int FAILURE_RESULT = 1;
 
     public static final String PACKAGE_NAME =
-            "com.google.android.gms.location.sample.locationaddress";
+            "assignments.mitch.ad340project";
 
     public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
 

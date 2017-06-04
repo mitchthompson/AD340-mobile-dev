@@ -111,7 +111,7 @@ public class FetchAddressIntentService extends IntentService {
             deliverResultToReceiver(Constants.FAILURE_RESULT, errorMessage);
         } else {
             Address address = addresses.get(0);
-            ArrayList<String> addressFragments = new ArrayList<String>();
+            ArrayList<String> addressFragments = new ArrayList<>();
 
             // Fetch the address lines using {@code getAddressLine},
             // join them, and send them to the thread. The {@link android.location.address}

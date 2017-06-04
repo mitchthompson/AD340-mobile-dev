@@ -5,18 +5,19 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "assignments.mitch.ad340project"
-        minSdkVersion 17
+        minSdkVersion 18
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        resValue "string", "google_maps_key",
+                (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            resValue "string", "google_maps_key",
-                    (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
         }
     }
 }
@@ -35,7 +36,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.android.gms:play-services-location:10.2.6'
     compile 'com.google.android.gms:play-services-maps:10.2.6'
-    compile 'com.google.android.gms:play-services-nearby:10.2.6'
     testCompile 'junit:junit:4.12'
 
 }

@@ -3,11 +3,9 @@ package assignments.mitch.ad340project;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +21,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,46 +31,42 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapLocation extends AppCompatActivity implements ConnectionCallbacks, OnMapReadyCallback, OnConnectionFailedListener {
-//    final static int REQUEST_LOCATION = 9;
-//
-//    protected static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
-//    protected static final String LOCATION_ADDRESS_KEY = "location-address";
-
+public class MapLocation extends AppCompatActivity implements ConnectionCallbacks, OnMapReadyCallback, OnConnectionFailedListener, LocationListener {
     private static final String TAG = MapLocation.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
     private Location mLastLocation;
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
     private GoogleMap mMap;
     protected TextView mLocationAddressTextView;
+    private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9;
 
-    protected boolean mAddressRequested;
     protected String mAddressOutput;
     private AddressResultReceiver mResultReceiver;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_location);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         mResultReceiver = new AddressResultReceiver(new Handler());
-        mAddressRequested = true;
         mAddressOutput = "";
 
         mLatitudeTextView = (TextView) findViewById(R.id.latitude);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude);
         mLocationAddressTextView = (TextView) findViewById(R.id.location_details);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         makeGoogleApiClient();
+        createLocationRequest();
+
     }
 
     protected synchronized void makeGoogleApiClient() {
@@ -81,6 +76,26 @@ public class MapLocation extends AppCompatActivity implements ConnectionCallback
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+        }
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        updateUI();
+    }
+
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
     }
 
@@ -109,30 +124,22 @@ public class MapLocation extends AppCompatActivity implements ConnectionCallback
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                ==PackageManager.PERMISSION_GRANTED){
+                == PackageManager.PERMISSION_GRANTED) {
             mLastLocation =
                     LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-        if (mLastLocation != null) {
-            Log.d(TAG, String.valueOf(mLastLocation.getLatitude()));
-            mLatitudeTextView.setText(String.valueOf(mLastLocation.getLatitude()));
-            mLongitudeTextView.setText(String.valueOf(mLastLocation.getLongitude()));
-
-            setMap();
-            if(mAddressRequested){
-                startIntentService();
-            }
-
+            updateUI();
         } else {
-            Toast.makeText(this, "Location not detected", Toast.LENGTH_LONG).show();
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            }
         }
-
     }
 
     @Override
@@ -159,17 +166,16 @@ public class MapLocation extends AppCompatActivity implements ConnectionCallback
             mGoogleApiClient.disconnect();
         }
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-    }
-
-    public void setMap(){
-        LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(myLocation)
-                .title("Current Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
     }
 
     class AddressResultReceiver extends ResultReceiver {
@@ -177,35 +183,61 @@ public class MapLocation extends AppCompatActivity implements ConnectionCallback
             super(handler);
         }
 
-        /**
-         *  Receives data sent from FetchAddressIntentService and updates the UI in MainActivity.
-         */
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
-
             // Display the address string or an error message sent from the intent service.
             mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
-            mLocationAddressTextView.setText(mAddressOutput);
+            mLocationAddressTextView.setText("Address: " + mAddressOutput);
 
-            // Reset. Enable the Fetch Address button and stop showing the progress bar.
-            mAddressRequested = false;
+            if (resultCode == Constants.SUCCESS_RESULT) {
+                Log.d(TAG, "Address found");
+                Toast.makeText(getApplicationContext(), "Address Found", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
     protected void startIntentService() {
-        // Create an intent for passing to the intent service responsible for fetching the address.
         Intent intent = new Intent(this, FetchAddressIntentService.class);
-
-        // Pass the result receiver as an extra to the service.
         intent.putExtra(Constants.RECEIVER, mResultReceiver);
-
-        // Pass the location data as an extra to the service.
         intent.putExtra(Constants.LOCATION_DATA_EXTRA, mLastLocation);
-
-        // Start the service. If the service isn't already running, it is instantiated and started
-        // (creating a process for it if needed); if it is running then it remains running. The
-        // service kills itself automatically once all intents are processed.
         startService(intent);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    updateUI();
+
+                } else {
+                }
+                return;
+            }
+        }
+    }
+
+    public void updateUI() {
+        if (mLastLocation == null) {
+            // get location updates
+            startLocationUpdates();
+        } else {
+
+            // initiate geocode request
+            startIntentService();
+
+            mLatitudeTextView.setText(String.valueOf(mLastLocation.getLatitude()));
+            mLongitudeTextView.setText(String.valueOf(mLastLocation.getLongitude()));
+
+            LatLng myLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            mMap.setMinZoomPreference(10); // zoom to city level
+            mMap.addMarker(new MarkerOptions().position(myLocation)
+                    .title("My location"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        }
+    }
 }
+
 
